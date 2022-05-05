@@ -57,7 +57,7 @@ impl ListView {
         for key in &self.secondary_keys {
             secondary_cols = format!("{}{}  ", secondary_cols, key)
         }
-        let mut aa = format!("{}{}{}\n", self.primary_key, " ".repeat(self.width as usize - self.primary_key.len() - secondary_cols.len() - 1), secondary_cols);
+        let mut output_string = format!("{}{}{}\n", self.primary_key, " ".repeat(self.width as usize - self.primary_key.len() - secondary_cols.len() - 1), secondary_cols);
         let mut displayed_items = &self.items[..];
         if displayed_items.len() > (self.height - 1) as usize {
             displayed_items = &self.items[self.start_index as usize..(self.start_index + self.height - 1) as usize]
@@ -66,26 +66,26 @@ impl ListView {
         for item in displayed_items {
             let name = item.name.chars().into_iter().take(self.width as usize - 2 - secondary_cols.len()).collect::<String>();
             if i == self.selected_line {
-                aa = format!("{}[[REVERSE]]{}{}", aa, name, " ".repeat(self.width as usize - name.len() - secondary_cols.len() - 1))
+                output_string = format!("{}[[REVERSE]]{}{}", output_string, name, " ".repeat(self.width as usize - name.len() - secondary_cols.len() - 1))
             } else {
-                aa = format!("{}{}{}", aa, name, " ".repeat(self.width as usize - name.len() - secondary_cols.len() - 1))
+                output_string = format!("{}{}{}", output_string, name, " ".repeat(self.width as usize - name.len() - secondary_cols.len() - 1))
             }
             for col in &self.secondary_keys {
                 if item.data.contains_key(col) {
-                    aa = format!("{}{}{}", aa, item.data[col], " ".repeat((col.len() + 2) - item.data[col].len()));
+                    output_string = format!("{}{}{}", output_string, item.data[col], " ".repeat((col.len() + 2) - item.data[col].len()));
                 } else {
-                    aa = format!("{}{}", aa, " ".repeat(col.len() + 2));
+                    output_string = format!("{}{}", output_string, " ".repeat(col.len() + 2));
                 }
                 
             }
             if i == self.selected_line {
-                aa = format!("{}[[REVERSE]]", aa);
+                output_string = format!("{}[[REVERSE]]", output_string);
             }
-            aa = format!("{}\n", aa);
+            output_string = format!("{}\n", output_string);
 
             i += 1;
         }   
-        aa
+        output_string
     }
 
     pub fn resize(&mut self, height: i32, width: i32) {
@@ -111,8 +111,7 @@ impl ListView {
     }
 
     pub fn select(&self, callback: fn(&ListItem)) {
-        let a = &self.items[self.counter as usize];
-        callback(a);
+        callback(&self.items[self.counter as usize]);
     }
 
     pub fn sort_by(&mut self, key: &str) {

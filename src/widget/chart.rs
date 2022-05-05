@@ -12,46 +12,44 @@ impl Chart {
         }
         data.reverse();
 
-        //println!("{:?}", data);
-
         let space_to_add = self.cols as f32 - (data.len() as f32 / 2.);
-        let mut name_to_define: std::collections::HashMap<&str, String> = std::collections::HashMap::new();
+        let mut chart_chars: std::collections::HashMap<&str, String> = std::collections::HashMap::new();
 
-        name_to_define.insert("10", String::from("⡀"));
-        name_to_define.insert("20", String::from("⡄"));
-        name_to_define.insert("30", String::from("⡆"));
-        name_to_define.insert("40", String::from("⡇"));
+        chart_chars.insert("10", String::from("⡀"));
+        chart_chars.insert("20", String::from("⡄"));
+        chart_chars.insert("30", String::from("⡆"));
+        chart_chars.insert("40", String::from("⡇"));
 
-        name_to_define.insert("01", String::from("⢀"));
-        name_to_define.insert("02", String::from("⢠"));
-        name_to_define.insert("03", String::from("⢰"));
-        name_to_define.insert("04", String::from("⢸"));
+        chart_chars.insert("01", String::from("⢀"));
+        chart_chars.insert("02", String::from("⢠"));
+        chart_chars.insert("03", String::from("⢰"));
+        chart_chars.insert("04", String::from("⢸"));
 
-        name_to_define.insert("11", String::from("⣀"));
-        name_to_define.insert("21", String::from("⣄"));
-        name_to_define.insert("31", String::from("⣆"));
-        name_to_define.insert("41", String::from("⣇"));
+        chart_chars.insert("11", String::from("⣀"));
+        chart_chars.insert("21", String::from("⣄"));
+        chart_chars.insert("31", String::from("⣆"));
+        chart_chars.insert("41", String::from("⣇"));
 
-        name_to_define.insert("12", String::from("⣠"));
-        name_to_define.insert("22", String::from("⣤"));
-        name_to_define.insert("32", String::from("⣦"));
-        name_to_define.insert("42", String::from("⣧"));
+        chart_chars.insert("12", String::from("⣠"));
+        chart_chars.insert("22", String::from("⣤"));
+        chart_chars.insert("32", String::from("⣦"));
+        chart_chars.insert("42", String::from("⣧"));
 
-        name_to_define.insert("13", String::from("⣰"));
-        name_to_define.insert("23", String::from("⣴"));
-        name_to_define.insert("33", String::from("⣶"));
-        name_to_define.insert("43", String::from("⣷"));
+        chart_chars.insert("13", String::from("⣰"));
+        chart_chars.insert("23", String::from("⣴"));
+        chart_chars.insert("33", String::from("⣶"));
+        chart_chars.insert("43", String::from("⣷"));
 
-        name_to_define.insert("14", String::from("⣸"));
-        name_to_define.insert("24", String::from("⣼"));
-        name_to_define.insert("34", String::from("⣾"));
-        name_to_define.insert("44", String::from("⣿"));
+        chart_chars.insert("14", String::from("⣸"));
+        chart_chars.insert("24", String::from("⣼"));
+        chart_chars.insert("34", String::from("⣾"));
+        chart_chars.insert("44", String::from("⣿"));
 
-        name_to_define.insert("01", String::from("⢀"));
-        name_to_define.insert("02", String::from("⢠"));
-        name_to_define.insert("03", String::from("⢰"));
-        name_to_define.insert("04", String::from("⢸"));
-        name_to_define.insert("00", String::from(" "));
+        chart_chars.insert("01", String::from("⢀"));
+        chart_chars.insert("02", String::from("⢠"));
+        chart_chars.insert("03", String::from("⢰"));
+        chart_chars.insert("04", String::from("⢸"));
+        chart_chars.insert("00", String::from(" "));
 
         let mut graph: String = String::new();
 
@@ -97,7 +95,7 @@ impl Chart {
                     full_block_to_add_two = 4;
                 }
 
-                graph = format!("{}{}", graph, name_to_define[&format!("{}{}",full_block_to_add_two, full_block_to_add_one).to_string()[..]]);
+                graph = format!("{}{}", graph, chart_chars[&format!("{}{}",full_block_to_add_two, full_block_to_add_one).to_string()[..]]);
                 i += 2
             }
 
@@ -109,10 +107,6 @@ impl Chart {
         }
 
         graph.chars().rev().collect::<String>()
-    }
-
-    pub fn new(cols: i32, rows: i32, show_percent: bool) -> Chart {
-        Chart{cols, rows, show_percent}
     }
 
     pub fn resize(&mut self, cols: i32, rows: i32) {
