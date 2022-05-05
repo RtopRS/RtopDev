@@ -1,7 +1,7 @@
 pub struct Chart {
-    cols: i32,
-    rows: i32,
-    show_percent: bool
+    pub cols: i32,
+    pub rows: i32,
+    pub show_percent: bool
 }
 
 impl Chart {
