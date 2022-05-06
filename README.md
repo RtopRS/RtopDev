@@ -15,11 +15,11 @@
 
 ## Quick Example
 Rtop let you create plugin for adding custom widgets.
-Firstly, create a new librairy project 
+Firstly, create a new project:
 ```
 cargo new --lib MyPlugin
 ```
-After that, update your `Cargo.toml` file. It should look like this
+After that, update your `Cargo.toml` file. It should look like that:
 ```toml
 [package]
 name = "MyPlugin"
@@ -27,13 +27,13 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-rtop_dev = "0.1.2"
+rtop_dev = "^0.2.0"
 
 [lib]
 name = "my_plugin"
 crate-type = ["dylib"]
 ```
-Then, edit your `src/lib.rs` for having somethings like this.
+Then, edit your `src/lib.rs` to have somethings like this:
 ```rust
 struct FooWidget {}
 
@@ -49,11 +49,11 @@ pub extern "Rust" fn init_foo() -> (Box<dyn rtop_dev::plugin::Plugin>, bool) {
 }
 
 ```
-For building your lib, simply run 
+To build your lib, simply run:
 ```
 cargo build --lib --release
 ```
-Your compilated plugin should be located here `target/release/libmy_plugin.so`
+Your plugin should be located here `target/release/libmy_plugin.so`.
 
 **Remember these things, For each widget you want to create, you must make a function called `init_{WIDGET}` which return a `Box<dyn rtop_dev::plugin::Plugin` and a `bool` that defines if your widget should receive input from the user or not.
 Don't forget to add `#[no_mangle]` in front of each `init` function. Otherwise, it will not be exported**
