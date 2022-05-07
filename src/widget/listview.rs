@@ -86,11 +86,14 @@ impl ListView {
             } else {
                 output_string = format!("{}{}{}", output_string, name, " ".repeat(self.width as usize - name.len() - secondary_cols.len() - 1));
             }
-            for (col, len) in &secondary_keys_len {
+
+            for col in &self.secondary_keys {
+                let len = secondary_keys_len[col];
+
                 if item.data.contains_key(col) {
                     output_string = format!("{}{}{}", output_string, item.data[col], " ".repeat(len - item.data[col].len()));
                 } else {
-                    output_string = format!("{}{}", output_string, " ".repeat(*len));
+                    output_string = format!("{}{}", output_string, " ".repeat(len));
                 }
             }
 
