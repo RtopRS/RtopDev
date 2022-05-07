@@ -53,12 +53,28 @@ impl ListView {
     }
 
     pub fn display(&mut self) -> String {
+        let mut secondary_keys_len = std::collections::HashMap::new();
+        for key in &self.secondary_keys {
+            secondary_keys_len.insert(key.to_string(), key.len() + 2);
+        }
+
+        let mut displayed_items = &self.items[..];
+
+        for item in displayed_items {
+            for name_to_define in &item.data {
+                let tmp = secondary_keys_len[name_to_define.0];
+                if name_to_define.1.len() + 2 > tmp {
+                    *secondary_keys_len.get_mut(name_to_define.0).unwrap() = name_to_define.1.len() + 2
+                }
+            }
+        }
+
         let mut secondary_cols = "".to_string();
         for key in &self.secondary_keys {
-            secondary_cols = format!("{}{}  ", secondary_cols, key)
+            secondary_cols = format!("{}{}{}", secondary_cols, key, " ".repeat(secondary_keys_len[key] - key.len()))
         }
+
         let mut output_string = format!("{}{}{}\n", self.primary_key, " ".repeat(self.width as usize - self.primary_key.len() - secondary_cols.len() - 1), secondary_cols);
-        let mut displayed_items = &self.items[..];
         if displayed_items.len() > (self.height - 1) as usize {
             displayed_items = &self.items[self.start_index as usize..(self.start_index + self.height - 1) as usize]
         }
@@ -66,18 +82,19 @@ impl ListView {
         for item in displayed_items {
             let name = item.name.chars().into_iter().take(self.width as usize - 2 - secondary_cols.len()).collect::<String>();
             if i == self.selected_line {
-                output_string = format!("{}[[REVERSE]]{}{}", output_string, name, " ".repeat(self.width as usize - name.len() - secondary_cols.len() - 1))
+                output_string = format!("{}[[REVERSE]]{}{}", output_string, name, " ".repeat(self.width as usize - name.len() - secondary_cols.len() - 1));
             } else {
-                output_string = format!("{}{}{}", output_string, name, " ".repeat(self.width as usize - name.len() - secondary_cols.len() - 1))
+                output_string = format!("{}{}{}", output_string, name, " ".repeat(self.width as usize - name.len() - secondary_cols.len() - 1));
             }
-            for col in &self.secondary_keys {
+            for (col, len) in &secondary_keys_len {
                 if item.data.contains_key(col) {
-                    output_string = format!("{}{}{}", output_string, item.data[col], " ".repeat((col.len() + 2) - item.data[col].len()));
+                    output_string = format!("{}{}{}", output_string, item.data[col], " ".repeat(len - item.data[col].len()));
                 } else {
-                    output_string = format!("{}{}", output_string, " ".repeat(col.len() + 2));
+                    output_string = format!("{}{}", output_string, " ".repeat(*len));
                 }
-                
             }
+
+
             if i == self.selected_line {
                 output_string = format!("{}[[REVERSE]]", output_string);
             }
