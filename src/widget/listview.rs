@@ -62,9 +62,11 @@ impl ListView {
 
         for item in displayed_items {
             for name_to_define in &item.data {
-                let tmp = secondary_keys_len[name_to_define.0];
-                if name_to_define.1.len() + 2 > tmp {
-                    *secondary_keys_len.get_mut(name_to_define.0).unwrap() = name_to_define.1.len() + 2
+                if secondary_keys_len.contains_key(name_to_define.0) {
+                    let tmp = secondary_keys_len[name_to_define.0];
+                    if name_to_define.1.len() + 2 > tmp {
+                        *secondary_keys_len.get_mut(name_to_define.0).unwrap() = name_to_define.1.len() + 2
+                    }   
                 }
             }
         }
@@ -82,9 +84,9 @@ impl ListView {
         for item in displayed_items {
             let name = item.name.chars().into_iter().take(self.width as usize - 2 - secondary_cols.len()).collect::<String>();
             if i == self.selected_line {
-                output_string = format!("{}[[REVERSE]]{}{}", output_string, name, " ".repeat(self.width as usize - name.len() - secondary_cols.len() - 1));
+                output_string = format!("{}[[EFFECT_REVERSE]]{}{}", output_string, name, " ".repeat(self.width as usize - name.chars().count() - secondary_cols.len() - 1));
             } else {
-                output_string = format!("{}{}{}", output_string, name, " ".repeat(self.width as usize - name.len() - secondary_cols.len() - 1));
+                output_string = format!("{}{}{}", output_string, name, " ".repeat(self.width as usize - name.chars().count() - secondary_cols.len() - 1));
             }
 
             for col in &self.secondary_keys {
@@ -99,7 +101,7 @@ impl ListView {
 
 
             if i == self.selected_line {
-                output_string = format!("{}[[REVERSE]]", output_string);
+                output_string = format!("{}[[EFFECT_REVERSE]]", output_string);
             }
             output_string = format!("{}\n", output_string);
 
@@ -130,8 +132,8 @@ impl ListView {
         }
     }
 
-    pub fn select(&self, callback: fn(&ListItem)) {
-        callback(&self.items[self.counter as usize]);
+    pub fn select(&self) -> &ListItem {
+        &self.items[self.counter as usize]
     }
 
     pub fn sort_by(&mut self, key: &str) {
