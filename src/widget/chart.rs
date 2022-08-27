@@ -5,10 +5,10 @@ pub struct Chart {
 }
 
 impl Chart {
-    pub fn display(&self, percents: &Vec<i32>) -> String {
+    pub fn display(&self, percents: &[i32]) -> String {
         let mut data = percents.to_vec();
         if percents.len() >= ((self.cols * 2) - 1) as usize {
-            data = percents.as_slice()[percents.len() + 2 - (self.cols * 2) as usize..].to_vec();
+            data = percents[percents.len() + 2 - (self.cols * 2) as usize..].to_vec();
         }
         data.reverse();
 

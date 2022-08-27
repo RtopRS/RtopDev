@@ -17,15 +17,15 @@ impl VerticalBar {
         name_to_find.insert(8, "█");
 
         if pourcent == 100. {
-            let tmp = &format!("[[EFFECT_COLOR_GREEN_GREY]]{}[[EFFECT_COLOR_GREEN_GREY]]\n", "█".repeat(self.width as usize));
+            let tmp = &format!("[[EFFECT_COLOR_GREEN_BLACK]]{}[[EFFECT_COLOR_GREEN_BLACK]]\n", "█".repeat(self.width as usize));
             out += &tmp.repeat(self.height as usize);
         } else {
             let block_filled = (self.height as f32 * 8. * (pourcent / 100.)) as i32;
             let white_lines = (self.height - 1 - (self.height as f32 * (pourcent / 100.)) as i32) as usize;
 
-            out += &format!("{}", format!("[[EFFECT_COLOR_GREEN_GREY]]{}[[EFFECT_COLOR_GREEN_GREY]]\n", " ".repeat(self.width as usize)).repeat(white_lines));
-            out += &format!("[[EFFECT_COLOR_GREEN_GREY]]{}[[EFFECT_COLOR_GREEN_GREY]]\n", name_to_find[&(block_filled % 8)].repeat(self.width as usize));
-            out += &format!("{}", format!("[[EFFECT_COLOR_GREEN_GREY]]{}[[EFFECT_COLOR_GREEN_GREY]]\n", "█".repeat(self.width as usize)).repeat(self.height as usize - white_lines - 1));
+            out += &format!("{}", format!("[[EFFECT_COLOR_GREEN_BLACK]]{}[[EFFECT_COLOR_GREEN_BLACK]]\n", " ".repeat(self.width as usize)).repeat(white_lines));
+            out += &format!("[[EFFECT_COLOR_GREEN_BLACK]]{}[[EFFECT_COLOR_GREEN_BLACK]]\n", name_to_find[&(block_filled % 8)].repeat(self.width as usize));
+            out += &format!("{}", format!("[[EFFECT_COLOR_GREEN_BLACK]]{}[[EFFECT_COLOR_GREEN_BLACK]]\n", "█".repeat(self.width as usize)).repeat(self.height as usize - white_lines - 1));
         }
 
         out
@@ -60,9 +60,9 @@ impl HorizontalBar {
         let white_lines = (self.width - 1 - (self.width as f32 * (pourcent / 100.)) as i32) as usize;
 
         if pourcent == 100. {
-            out += &format!("[[EFFECT_COLOR_GREEN_GREY]]{}[[EFFECT_COLOR_GREEN_GREY]]\n", name_to_find[&8].repeat(self.width as usize)).repeat(self.height as usize);
+            out += &format!("[[EFFECT_COLOR_GREEN_BLACK]]{}[[EFFECT_COLOR_GREEN_BLACK]]\n", name_to_find[&8].repeat(self.width as usize)).repeat(self.height as usize);
         } else {
-            out += &format!("[[EFFECT_COLOR_GREEN_GREY]]{}{}{}[[EFFECT_COLOR_GREEN_GREY]]\n", name_to_find[&8].repeat((block_filled / 8) as usize), name_to_find[&(block_filled % 8)], " ".repeat(white_lines)).repeat(self.height as usize);
+            out += &format!("[[EFFECT_COLOR_GREEN_BLACK]]{}{}{}[[EFFECT_COLOR_GREEN_BLACK]]\n", name_to_find[&8].repeat((block_filled / 8) as usize), name_to_find[&(block_filled % 8)], " ".repeat(white_lines)).repeat(self.height as usize);
         }
 
         
