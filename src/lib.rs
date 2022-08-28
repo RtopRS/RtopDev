@@ -4,5 +4,5 @@
 //! println!("{}", "TODO");
 //! ```
 
-pub mod widget;
+pub mod components;
 pub mod plugin;
