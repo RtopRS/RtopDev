@@ -1,3 +1,11 @@
+//! TODO
+//! 
+//! # Example
+//! ```rust
+//! printl!("{}", "todo next time!")
+//! ```
+
+
 pub struct Chart {
     pub cols: i32,
     pub rows: i32,
