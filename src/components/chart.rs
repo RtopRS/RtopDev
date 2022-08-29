@@ -1,18 +1,33 @@
-//! TODO
+//! # Components representing a Graph
 //! 
-//! # Example
+//! ## Example
 //! ```rust
-//! printl!("{}", "todo next time!")
+//! let data: Vec<i32> = vec!(20, 15, 14, 20, 8, 0, 9);
+//! let chart = Chart::new(0, 0, Some(20), Some(true), Some(String::from("Out of 20")));
+//! chart.resize(50, 25); // Resize the chart with a width of 50 and a height of 25 cells
+//! let result = chart.display();
 //! ```
 
 
 pub struct Chart {
+    /// Represent the width of the chart in cells
     pub cols: i32,
+
+    /// Represent the height of the chart in cells
     pub rows: i32,
-    pub show_percent: bool
+
+    /// Define if the chart should have or not the current value displayed at top of it
+    pub show_unit: bool,
+
+    /// Define the max value to display a progress of 100% on the chart
+    pub higher_value: i32,
+
+    /// Define the suffix displayed after the current value if it displayed
+    pub unit_suffix: String 
 }
 
 impl Chart {
+    /// Create the chart and return a formatted string ready to be displayed in Rtop
     pub fn display(&self, percents: &[i32]) -> String {
         let mut data = percents.to_vec();
         if percents.len() >= ((self.cols * 2) - 1) as usize {
@@ -62,27 +77,27 @@ impl Chart {
         let mut graph: String = String::new();
 
         let mut graph_rows = self.rows;
-        if self.show_percent {
+        if self.show_unit {
             graph_rows = self.rows - 1;
         }
 
         for row in 0..graph_rows {
             let mut i = 0;
             while i < data.len() {
-                let percent_one = data[i as usize];
-                let mut tmp_one = percent_one as f32 / 100. * self.rows as f32 * 4.;
+                let percent_one = data[i];
+                let mut tmp_one = percent_one as f32 / self.higher_value as f32 * self.rows as f32 * 4.;
                 if tmp_one < 1. {
                     tmp_one = 1.;
                 }
                 let mut full_block_to_add_one = tmp_one as i32 - (4 * row);
 
                 let mut percent_two = 0;
-                let mut tmp_two = percent_two as f32 / 100. * self.rows as f32 * 4.;
+                let mut tmp_two = percent_two as f32 / self.higher_value as f32 * self.rows as f32 * 4.;
                 let mut full_block_to_add_two = tmp_two as i32 - (4 * row);
 
                 if i as usize + 1 < data.len() {    
-                    percent_two = data[i as usize + 1];
-                    tmp_two = percent_two as f32 / 100. * self.rows as f32 * 4.;
+                    percent_two = data[i + 1];
+                    tmp_two = percent_two as f32 / self.higher_value as f32 * self.rows as f32 * 4.;
                     if tmp_two < 1. {
                         tmp_two = 1.;
                     }
@@ -110,15 +125,21 @@ impl Chart {
             graph = format!("\n{}{}", graph, " ".repeat(space_to_add as usize));
         }
 
-        if self.show_percent && !data.is_empty() {
-            graph = format!("{}%{}{}", graph, data[0].to_string().chars().rev().collect::<String>()," ".repeat((self.cols - data[0].to_string().chars().count() as i32 - 2) as usize));
+        if self.show_unit && !data.is_empty() {
+            graph = format!("{}{}{}{}", graph, self.unit_suffix.chars().rev().collect::<String>(), data[0].to_string().chars().rev().collect::<String>()," ".repeat((self.cols - data[0].to_string().chars().count() as i32 - 2 - self.unit_suffix.chars().count() as i32) as usize));
         }
 
         graph.chars().rev().collect::<String>()
     }
 
+    /// Resize the chart
     pub fn resize(&mut self, cols: i32, rows: i32) {
         self.cols = cols;
         self.rows = rows;
+    }
+
+    /// Create a new chart
+    pub fn new(cols: i32, rows: i32, higher_value: Option<i32>, show_unit: Option<bool>, unit_suffix: Option<String>) -> Self {
+        Self{cols, rows, higher_value: higher_value.unwrap_or_else(|| 100), show_unit: show_unit.unwrap_or_else(|| false), unit_suffix: unit_suffix.unwrap_or_else(|| String::from("%"))}
     }
 }
