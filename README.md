@@ -22,7 +22,7 @@ cargo new --lib MyPlugin
 After that, update your `Cargo.toml` file. It should look like that:
 ```toml
 [package]
-name = "MyPlugin"
+name = "my_plugin"
 version = "0.1.0"
 edition = "2021"
 
@@ -31,13 +31,13 @@ rtop_dev = "^0.2.0"
 
 [lib]
 name = "my_plugin"
-crate-type = ["dylib"]
+crate-type = ["cdylib"]
 ```
 Then, edit your `src/lib.rs` to have somethings like this:
 ```rust
 struct FooWidget {}
 
-impl rtop_dev::plugin::Plugin for FooWidget {
+impl rtop_dev::widget::Widget for FooWidget {
     fn display(&mut self, _height: i32, _width: i32) -> String {
         String::from("Hello World RTop!")
     }

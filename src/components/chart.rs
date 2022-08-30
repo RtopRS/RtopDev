@@ -30,8 +30,8 @@ impl Chart {
     /// Create the chart and return a formatted string ready to be displayed in Rtop
     pub fn display(&self, percents: &[i32]) -> String {
         let mut data = percents.to_vec();
-        if percents.len() >= ((self.cols * 2) - 1) as usize {
-            data = percents[percents.len() + 2 - (self.cols * 2) as usize..].to_vec();
+        if percents.len() >= ((self.cols * 2)) as usize - 2 {
+            data = percents[percents.len() + 4 - (self.cols * 2) as usize..].to_vec();
         }
         data.reverse();
 
@@ -126,7 +126,7 @@ impl Chart {
         }
 
         if self.show_unit && !data.is_empty() {
-            graph = format!("{}{}{}{}", graph, self.unit_suffix.chars().rev().collect::<String>(), data[0].to_string().chars().rev().collect::<String>()," ".repeat((self.cols - data[0].to_string().chars().count() as i32 - 2 - self.unit_suffix.chars().count() as i32) as usize));
+            graph = format!("{}{}{}{}", graph, self.unit_suffix.chars().rev().collect::<String>(), data[0].to_string().chars().rev().collect::<String>()," ".repeat((self.cols - data[0].to_string().chars().count() as i32 - 1 - self.unit_suffix.chars().count() as i32) as usize));
         }
 
         graph.chars().rev().collect::<String>()
