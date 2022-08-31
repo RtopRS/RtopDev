@@ -16,7 +16,7 @@
 //!
 //! [lib]
 //! name = "my_plugin"
-//! crate-type = ["dylib"]
+//! crate-type = ["cdylib"]
 //! ```
 //! Then, edit your `src/lib.rs` to have somethings like this:
 //! ```rust
