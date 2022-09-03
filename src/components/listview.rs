@@ -16,7 +16,7 @@
 //! 
 //! // ...
 //! 
-//! listview.sort_by(String::from("key1"), std::cmp::Ordering::Less) // Sort by "key1" in descending order
+//! listview.sort_by(String::from("key1"), Ordering::Inversed) // Sort by "key1" in descending order
 //! ```
 
 use std::fmt::Write;
@@ -33,7 +33,7 @@ pub struct ListView {
     start_index: i32,
     sort_key: Option<String>,
     counter: i32,
-    ordering: Option<std::cmp::Ordering>
+    ordering: Option<Ordering>
 }
 
 impl ListView {
@@ -47,7 +47,7 @@ impl ListView {
     /// * `sort_key` - *`Optional`* - If supplied, the items will be ordered by the value of the selected column.<br>
     /// **⚠️ The `sort_key` must be one of the `secondary_keys` or the `primary_key`, otherwise, no sort will be applied**
     /// * `ordering` - *`Optional`* - If supplied, change the ordering direction
-    pub fn new(cols: i32, rows: i32, items: &[ListItem], primary_key: String, secondary_keys: Vec<String>, sort_key: Option<String>, ordering: Option<std::cmp::Ordering>) -> ListView {
+    pub fn new(cols: i32, rows: i32, items: &[ListItem], primary_key: String, secondary_keys: Vec<String>, sort_key: Option<String>, ordering: Option<Ordering>) -> ListView {
         let mut created_listview = ListView{rows, cols, counter: 0, items: items.to_vec(), primary_key, secondary_keys, selected_line: 1, start_index: 0, sort_key, ordering};
         created_listview.sort();
         created_listview
@@ -118,9 +118,9 @@ impl ListView {
         for key in &self.secondary_keys {
             if let Some(sort_key) = &self.sort_key {
                 if key == sort_key {
-                    if let Some(ordering) = self.ordering {
+                    if let Some(ordering) = &self.ordering {
                         secondary_cols += &match ordering {
-                            std::cmp::Ordering::Greater => format!("[[EFFECT_BOLD]]{}[[EFFECT_BOLD]]{}", key, " ".repeat(secondary_keys_len[key] - key.len())),
+                            Ordering::Default => format!("[[EFFECT_BOLD]]{}[[EFFECT_BOLD]]{}", key, " ".repeat(secondary_keys_len[key] - key.len())),
                             _ => format!("[[EFFECT_ITALIC]]{}[[EFFECT_ITALIC]]{}", key, " ".repeat(secondary_keys_len[key] - key.len()))
                         };
                     } else {
@@ -137,9 +137,9 @@ impl ListView {
         let mut tmp = 0; // TODO: rename this
         if let Some(sort_key) = &self.sort_key {
             if &self.primary_key != sort_key && self.secondary_keys.contains(sort_key) {
-                if let Some(ordering) = self.ordering {
+                if let Some(ordering) = &self.ordering {
                     tmp = match ordering {
-                        std::cmp::Ordering::Greater => 30,
+                        Ordering::Default => 30,
                         _ => 32
                     };
                 }
@@ -149,9 +149,9 @@ impl ListView {
         let mut name_to_define = String::from(&self.primary_key); // TODO rename name_to_define
         if let Some(sort_key) = &self.sort_key {
             if &self.primary_key == sort_key {
-                if let Some(ordering) = self.ordering {
+                if let Some(ordering) = &self.ordering {
                     name_to_define = match ordering {
-                        std::cmp::Ordering::Greater => format!("[[EFFECT_BOLD]]{}[[EFFECT_BOLD]]", self.primary_key),
+                        Ordering::Default => format!("[[EFFECT_BOLD]]{}[[EFFECT_BOLD]]", self.primary_key),
                         _ => format!("[[EFFECT_ITALIC]]{}[[EFFECT_ITALIC]]", self.primary_key)
                     };
                 }
@@ -220,7 +220,7 @@ impl ListView {
     }
 
     /// Sort the ListView items by the provided key
-    pub fn sort_by(&mut self, key: Option<String>, ordering: Option<std::cmp::Ordering>) {
+    pub fn sort_by(&mut self, key: Option<String>, ordering: Option<Ordering>) {
         self.sort_key = key;
         self.ordering = ordering;
 
@@ -228,14 +228,14 @@ impl ListView {
     }
 
     fn sort(&mut self) {
-        if let (Some(sort_key), Some(ordering)) = (&self.sort_key, self.ordering) {
+        if let (Some(sort_key), Some(ordering)) = (&self.sort_key, &self.ordering) {
             if sort_key != &self.primary_key {
-                self.items.sort_by(|a, b| (human_sort::compare(&a.data.get(sort_key).unwrap_or(&String::new()).to_lowercase(), &b.data.get(sort_key).unwrap_or(&String::new()).to_lowercase())));
+                self.items.sort_by(|a, b| (human_sort::compare(&b.data.get(sort_key).unwrap_or(&String::new()).to_lowercase(), &a.data.get(sort_key).unwrap_or(&String::new()).to_lowercase())));
             } else {
-                self.items.sort_by(|a, b| (human_sort::compare(&a.name.to_lowercase(), &b.name.to_lowercase())));
+                self.items.sort_by(|a, b| (human_sort::compare(&b.name.to_lowercase(), &a.name.to_lowercase())));
             }
     
-            if ordering == std::cmp::Ordering::Greater {
+            if *ordering == Ordering::Inversed {
                 self.items.reverse();
             }
         }
@@ -255,4 +255,12 @@ impl ListItem {
     pub fn new(name: &str, data: &std::collections::HashMap<String, String>) -> ListItem {
         ListItem{name: name.to_string(), data: data.clone()}
     }
+}
+
+/// Represent the Sort Order of a [ListView]
+/// The default ordering is the alphabetical order for String and descending for the number
+#[derive(PartialEq)]
+pub enum Ordering {
+    Default,
+    Inversed
 }
