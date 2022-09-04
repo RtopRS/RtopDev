@@ -8,6 +8,7 @@
 //! let result = chart.display();
 //! ```
 
+use std::fmt::Write;
 
 pub struct Chart {
     /// Represent the width of the chart in cells
@@ -30,8 +31,8 @@ impl Chart {
     /// Create the chart and return a formatted string ready to be displayed in Rtop
     pub fn display(&self, percents: &[i32]) -> String {
         let mut data = percents.to_vec();
-        if percents.len() >= (self.cols * 2) as usize - 2 {
-            data = percents[percents.len() + 4 - (self.cols * 2) as usize..].to_vec();
+        if percents.len() >= (self.cols * 2) as usize {
+            data = percents[percents.len() - (self.cols * 2) as usize..].to_vec();
         }
         data.reverse();
 
@@ -74,62 +75,73 @@ impl Chart {
         chart_chars.insert("04", String::from("⢸"));
         chart_chars.insert("00", String::from(" "));
 
-        let mut graph: String = String::new();
+        let mut graph = String::new();
 
         let mut graph_rows = self.rows;
         if self.show_unit {
             graph_rows = self.rows - 1;
         }
 
-        for row in 0..graph_rows {
-            let mut i = 0;
-            while i < data.len() {
-                let percent_one = data[i];
-                let mut tmp_one = percent_one as f32 / self.higher_value as f32 * self.rows as f32 * 4.;
-                if tmp_one < 1. {
-                    tmp_one = 1.;
-                }
-                let mut full_block_to_add_one = tmp_one as i32 - (4 * row);
-
-                let mut percent_two = 0;
-                let mut tmp_two = percent_two as f32 / self.higher_value as f32 * self.rows as f32 * 4.;
-                let mut full_block_to_add_two = tmp_two as i32 - (4 * row);
-
-                if i as usize + 1 < data.len() {    
-                    percent_two = data[i + 1];
-                    tmp_two = percent_two as f32 / self.higher_value as f32 * self.rows as f32 * 4.;
-                    if tmp_two < 1. {
-                        tmp_two = 1.;
-                    }
-                    full_block_to_add_two = tmp_two as i32 - (4 * row);
-                }
-
-                if full_block_to_add_one < 0 {
-                    full_block_to_add_one = 0;
-                }
-                if full_block_to_add_two < 0 {
-                    full_block_to_add_two = 0;
-                }
-
-                if full_block_to_add_one > 4 {
-                    full_block_to_add_one = 4;
-                }
-                if full_block_to_add_two > 4 {
-                    full_block_to_add_two = 4;
-                }
-
-                graph = format!("{}{}", graph, chart_chars[&format!("{}{}",full_block_to_add_two, full_block_to_add_one).to_string()[..]]);
-                i += 2
+        let mut final_graph = String::new();
+        if !data.is_empty() {
+            if self.show_unit {
+                writeln!(&mut final_graph, "{}{}{}", " ".repeat((self.cols - data[0].to_string().chars().count() as i32 - self.unit_suffix.chars().count() as i32) as usize), data[0], self.unit_suffix).unwrap();
             }
 
-            graph = format!("\n{}{}", graph, " ".repeat(space_to_add as usize));
+            let mut tmp = vec!();
+
+            for row in 0..graph_rows {
+                let mut i = 0;
+                while i < data.len() {
+                    let percent_one = data[i];
+                    let mut tmp_one = percent_one as f32 / self.higher_value as f32 * self.rows as f32 * 4.;
+                    if tmp_one < 1. {
+                        tmp_one = 1.;
+                    }
+                    let mut full_block_to_add_one = tmp_one as i32 - (4 * row);
+    
+                    let mut percent_two = 0;
+                    let mut tmp_two = percent_two as f32 / self.higher_value as f32 * self.rows as f32 * 4.;
+                    let mut full_block_to_add_two = tmp_two as i32 - (4 * row);
+    
+                    if i as usize + 1 < data.len() {    
+                        percent_two = data[i + 1];
+                        tmp_two = percent_two as f32 / self.higher_value as f32 * self.rows as f32 * 4.;
+                        if tmp_two < 1. {
+                            tmp_two = 1.;
+                        }
+                        full_block_to_add_two = tmp_two as i32 - (4 * row);
+                    }
+    
+                    if full_block_to_add_one < 0 {
+                        full_block_to_add_one = 0;
+                    }
+                    if full_block_to_add_two < 0 {
+                        full_block_to_add_two = 0;
+                    }
+    
+                    if full_block_to_add_one > 4 {
+                        full_block_to_add_one = 4;
+                    }
+                    if full_block_to_add_two > 4 {
+                        full_block_to_add_two = 4;
+                    }
+    
+                    graph = format!("{}{}", graph, chart_chars[&format!("{}{}",full_block_to_add_two, full_block_to_add_one)[..]]);
+                    i += 2
+                }
+
+                tmp.push(graph);
+                graph = String::new();
+            }
+
+            tmp.reverse();
+            for line in tmp {
+                writeln!(&mut final_graph, "{}{}", " ".repeat(space_to_add as usize), line.chars().rev().collect::<String>()).unwrap();
+            }
         }
 
-        if self.show_unit && !data.is_empty() {
-            graph = format!("{}{}{}{}", graph, self.unit_suffix.chars().rev().collect::<String>(), data[0].to_string().chars().rev().collect::<String>()," ".repeat((self.cols - data[0].to_string().chars().count() as i32 - 1 - self.unit_suffix.chars().count() as i32) as usize));
-        }
-
-        graph.chars().rev().collect::<String>()
+        final_graph
     }
 
     /// Resize the chart

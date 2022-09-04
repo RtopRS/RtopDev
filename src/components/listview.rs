@@ -21,7 +21,6 @@
 
 use std::fmt::Write;
 
-
 /// Display list of [ListItem] with table header, ordering and other stuffs
 pub struct ListView {
     cols: i32,
@@ -159,18 +158,18 @@ impl ListView {
         }
 
 
-        let mut output_string = format!(" {}{}{}\n", name_to_define, " ".repeat(self.cols as usize - self.primary_key.len() - secondary_cols.len() - 2 + tmp), secondary_cols);
+        let mut output_string = format!("{}{}{}\n", name_to_define, " ".repeat(self.cols as usize - self.primary_key.len() - secondary_cols.len() + tmp), secondary_cols);
         if displayed_items.len() > (self.rows - 1) as usize {
             displayed_items = &self.items[self.start_index as usize..(self.start_index + self.rows - 1) as usize];
         }
         let mut i = 1;
 
         for item in displayed_items {
-            let name = item.name.chars().into_iter().take(self.cols as usize - secondary_cols.len() - 4 + tmp).collect::<String>();
+            let name = item.name.chars().into_iter().take(self.cols as usize - secondary_cols.len() + tmp).collect::<String>();
             if i == self.selected_line {
-                write!(&mut output_string, " [[EFFECT_REVERSE]]{}{}", name," ".repeat(self.cols as usize - name.chars().count() - secondary_cols.len() - 2 + tmp)).unwrap();
+                write!(&mut output_string, "[[EFFECT_REVERSE]]{}{}", name," ".repeat(self.cols as usize - name.chars().count() - secondary_cols.len() + tmp)).unwrap();
             } else {
-                write!(&mut output_string, " {}{}", name, " ".repeat(self.cols as usize - name.chars().count() - secondary_cols.len() - 2 + tmp)).unwrap();
+                write!(&mut output_string, "{}{}", name, " ".repeat(self.cols as usize - name.chars().count() - secondary_cols.len() + tmp)).unwrap();
             }
 
             for col in &self.secondary_keys {
@@ -259,7 +258,7 @@ impl ListItem {
 
 /// Represent the Sort Order of a [ListView]
 /// The default ordering is the alphabetical order for String and descending for the number
-#[derive(PartialEq)]
+#[derive(PartialEq, Eq)]
 pub enum Ordering {
     Default,
     Inversed
