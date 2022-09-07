@@ -1,11 +1,23 @@
+//! # Components representing a ProgressBar
+//! 
+//! ## Example
+//! ```rust
+//! println!("TODO");
+//! ```
+
 use std::fmt::Write;
 
 pub struct VerticalBar {
-    pub height: i32,
-    pub width: i32,
+    rows: i32,
+    cols: i32,
     color: Color
 }
 impl VerticalBar {
+    /// # Return a formatted String ready to be display in rtop
+    /// ## Arguments
+    /// 
+    /// * `pourcent` - Represent the progress of the VerticlaBar<br>
+    /// **⚠️ The `pourcent` must be between 0.0 and 100.0**
     pub fn display(&self, pourcent: f32) -> String {
         let color = match self.color {
             Color::Red => "[[EFFECT_COLOR_RED_BLACK]]",
@@ -18,16 +30,16 @@ impl VerticalBar {
         };
 
         let mut out = String::new();
-        let mut name_to_find = std::collections::HashMap::new();
-        name_to_find.insert(0, " ");
-        name_to_find.insert(1, "▁");
-        name_to_find.insert(2, "▂");
-        name_to_find.insert(3, "▃");
-        name_to_find.insert(4, "▄");
-        name_to_find.insert(5, "▅");
-        name_to_find.insert(6, "▆");
-        name_to_find.insert(7, "▇");
-        name_to_find.insert(8, "█");
+        let mut bar_parts = std::collections::HashMap::new();
+        bar_parts.insert(0, " ");
+        bar_parts.insert(1, "▁");
+        bar_parts.insert(2, "▂");
+        bar_parts.insert(3, "▃");
+        bar_parts.insert(4, "▄");
+        bar_parts.insert(5, "▅");
+        bar_parts.insert(6, "▆");
+        bar_parts.insert(7, "▇");
+        bar_parts.insert(8, "█");
 
         if pourcent == 100. {
             out += &format!("{}{}{}\n", color, "█".repeat(self.width as usize), color).repeat(self.height as usize);
@@ -36,21 +48,27 @@ impl VerticalBar {
             let white_lines = (self.height - 1 - (self.height as f32 * (pourcent / 100.)) as i32) as usize;
 
             out += &format!("{}{}{}\n", color, " ".repeat(self.width as usize), color).repeat(white_lines);
-            writeln!(&mut out, "{}{}{}", color, name_to_find[&(block_filled % 8)].repeat(self.width as usize), color).unwrap();
+            writeln!(&mut out, "{}{}{}", color, bar_parts[&(block_filled % 8)].repeat(self.width as usize), color).unwrap();
             out += &format!("{}{}{}\n", color, "█".repeat(self.width as usize), color).repeat(self.height as usize - white_lines - 1);
         }
 
         out
     }
 
-    pub fn new(height: i32, width: i32, color: Option<Color>) -> VerticalBar {
-        VerticalBar{height, width, color: color.unwrap_or(Color::Green)}
+    /// # Create a new VerticalBar
+    /// ## Arguments
+    /// 
+    /// * `cols` - Represent the width of the bar in cells
+    /// * `rows` - Represent the height of the bar in cells
+    /// * `color` - *`Optional`* - If supplied, set the color of the progress of the bar, otehrwise, it will be green
+    pub fn new(rows: i32, cols: i32, color: Option<Color>) -> VerticalBar {
+        VerticalBar{rows, cols, color: color.unwrap_or(Color::Green)}
     }
 }
 
 pub struct HorizontalBar {
-    pub height: i32,
-    pub width: i32,
+    rows: i32,
+    cols: i32,
     color: Color
 }
 impl HorizontalBar {
@@ -66,34 +84,41 @@ impl HorizontalBar {
         };
 
         let mut out = String::new();
-        let mut name_to_find = std::collections::HashMap::new();
-        name_to_find.insert(0, " ");
-        name_to_find.insert(1, "▏");
-        name_to_find.insert(2, "▎");
-        name_to_find.insert(3, "▍");
-        name_to_find.insert(4, "▌");
-        name_to_find.insert(5, "▋");
-        name_to_find.insert(6, "▊");
-        name_to_find.insert(7, "▉");
-        name_to_find.insert(8, "█");
+        let mut bar_parts = std::collections::HashMap::new();
+        bar_parts.insert(0, " ");
+        bar_parts.insert(1, "▏");
+        bar_parts.insert(2, "▎");
+        bar_parts.insert(3, "▍");
+        bar_parts.insert(4, "▌");
+        bar_parts.insert(5, "▋");
+        bar_parts.insert(6, "▊");
+        bar_parts.insert(7, "▉");
+        bar_parts.insert(8, "█");
 
         let block_filled = (self.width as f32 * 8. * (pourcent / 100.)) as i32;
         let white_lines = (self.width - 1 - (self.width as f32 * (pourcent / 100.)) as i32) as usize;
 
         if pourcent == 100. {
-            out += &format!("{}{}{}\n", color, name_to_find[&8].repeat(self.width as usize), color).repeat(self.height as usize);
+            out += &format!("{}{}{}\n", color, bar_parts[&8].repeat(self.width as usize), color).repeat(self.height as usize);
         } else {
-            out += &format!("{}{}{}{}{}\n", color, name_to_find[&8].repeat((block_filled / 8) as usize), name_to_find[&(block_filled % 8)], " ".repeat(white_lines), color).repeat(self.height as usize);
+            out += &format!("{}{}{}{}{}\n", color, bar_parts[&8].repeat((block_filled / 8) as usize), bar_parts[&(block_filled % 8)], " ".repeat(white_lines), color).repeat(self.height as usize);
         }
 
         out
     }
 
-    pub fn new(height: i32, width: i32, color: Option<Color>) -> HorizontalBar {
-        HorizontalBar{height, width, color: color.unwrap_or(Color::Green)}
+    /// # Create a new HorizontalBar
+    /// ## Arguments
+    /// 
+    /// * `cols` - Represent the width of the bar in cells
+    /// * `rows` - Represent the height of the bar in cells
+    /// * `color` - *`Optional`* - If supplied, set the color of the progress of the bar, otehrwise, it will be green
+    pub fn new(rows: i32, cols: i32, color: Option<Color>) -> HorizontalBar {
+        HorizontalBar{rows, cols, color: color.unwrap_or(Color::Green)}
     }
 }
 
+/// Represent a Color of progress for the Bar
 pub enum Color {
     Red,
     Green,

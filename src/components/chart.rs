@@ -10,6 +10,7 @@
 
 use std::fmt::Write;
 
+/// Represent a sheet of data in the form of a graph
 pub struct Chart {
     /// Represent the width of the chart in cells
     pub cols: i32,
@@ -28,7 +29,7 @@ pub struct Chart {
 }
 
 impl Chart {
-    /// Create the chart and return a formatted string ready to be displayed in Rtop
+    /// # Create the chart and return a formatted string ready to be displayed in Rtop
     pub fn display(&self, percents: &[i32]) -> String {
         let mut data = percents.to_vec();
         if percents.len() >= (self.cols * 2) as usize {
@@ -144,13 +145,13 @@ impl Chart {
         final_graph
     }
 
-    /// Resize the chart
+    /// # Resize the chart
     pub fn resize(&mut self, cols: i32, rows: i32) {
         self.cols = cols;
         self.rows = rows;
     }
 
-    /// Create a new chart
+    /// # Create a new chart
     pub fn new(cols: i32, rows: i32, higher_value: Option<i32>, show_unit: Option<bool>, unit_suffix: Option<String>) -> Self {
         Self{cols, rows, higher_value: higher_value.unwrap_or(100), show_unit: show_unit.unwrap_or(false), unit_suffix: unit_suffix.unwrap_or_else(|| String::from("%"))}
     }

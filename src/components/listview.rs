@@ -16,7 +16,7 @@
 //! 
 //! // ...
 //! 
-//! listview.sort_by(String::from("key1"), Ordering::Inversed) // Sort by "key1" in descending order
+//! listview.sort_by(String::from("key1"), Ordering::Inversed); // Sort by "key1" in descending order
 //! ```
 
 use std::fmt::Write;
@@ -36,7 +36,8 @@ pub struct ListView {
 }
 
 impl ListView {
-    /// # Arguments
+    /// # Create a new ListView
+    /// ## Arguments
     ///
     /// * `cols` - Represent the width of the chart in cells
     /// * `rows` - Represent the height of the chart in cells
@@ -52,7 +53,7 @@ impl ListView {
         created_listview
     }
 
-    /// Select the previous element if possible
+    /// # Select the previous element if possible
     pub fn previous(&mut self) {
         if self.counter > 0 {
             self.counter -= 1;
@@ -64,7 +65,7 @@ impl ListView {
         }
     }
 
-    /// Select the next element if possible
+    /// # Select the next element if possible
     pub fn next(&mut self) {
         if self.counter < self.items.len() as i32 - 1{
             self.counter += 1;
@@ -76,7 +77,7 @@ impl ListView {
         }
     }
 
-    /// Select the last element
+    /// # Select the last element
     pub fn to_last(&mut self) {
         self.counter = self.items.len() as i32 - 1;
         self.selected_line = self.counter + 1;
@@ -86,14 +87,14 @@ impl ListView {
         }
     }
 
-    /// Select the first element
+    /// # Select the first element
     pub fn to_first(&mut self) {
         self.counter = 0;
         self.selected_line = 1;
         self.start_index = 0;
     }
 
-    /// Create the List and return a formatted string ready to be displayed in Rtop
+    /// # Create the List and return a formatted String ready to be displayed in Rtop
     pub fn display(&mut self) -> String {
         let mut secondary_keys_len = std::collections::HashMap::new();
         for key in &self.secondary_keys {
@@ -192,7 +193,7 @@ impl ListView {
         output_string
     }
 
-    /// Resize the ListView
+    /// # Resize the ListView
     pub fn resize(&mut self, height: i32, width: i32) {
         self.rows = height;
         self.cols = width;
@@ -202,7 +203,7 @@ impl ListView {
         }
     }
 
-    /// Update the list of ListItem contained in the ListView
+    /// # Update the list of ListItem contained in the ListView
     pub fn update_items(&mut self, items: &[ListItem]) {
         if items.len() < self.counter as usize + 1 {
             self.start_index -= self.counter + 1 - items.len() as i32;
@@ -213,19 +214,19 @@ impl ListView {
         self.sort();
     }
 
-    /// Return the current selected ListItem
+    /// # Return the current selected ListItem
     pub fn select(&self) -> &ListItem {
         &self.items[self.counter as usize]
     }
 
-    /// Sort the ListView items by the provided key
+    /// # Sort the ListView items by the provided key
     pub fn sort_by(&mut self, key: Option<String>, ordering: Option<Ordering>) {
         self.sort_key = key;
         self.ordering = ordering;
 
         self.sort();
     }
-
+    
     fn sort(&mut self) {
         if let (Some(sort_key), Some(ordering)) = (&self.sort_key, &self.ordering) {
             if sort_key != &self.primary_key {
