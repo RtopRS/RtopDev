@@ -1,4 +1,4 @@
-//! Rtop SDK to create plugin. Made with love for you.
+//! Rtop SDK to create plugin. Made with ❤️ for you.
 //! ## Example Usage
 //! Firstly, create a new project for your plugin!
 //! ```

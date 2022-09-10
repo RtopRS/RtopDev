@@ -2,22 +2,34 @@
 //! 
 //! ## Example
 //! ```rust
-//! let mut items: Vec<ListItem>;
+//! use rtop_dev::components::listview::ListView;
+//! use rtop_dev::components::listview::ListItem;
+//! use rtop_dev::components::listview::Ordering;
+//! 
+//! 
+//! let mut items: Vec<ListItem> = vec!();
 //! 
 //! for i in 0..5 {
+//! 
+//!     let mut item_data = std::collections::HashMap::new();
+//!     item_data.insert(String::from("key1"), format!("Value{}", i));
+//! 
 //!     items.push(
-//!         ListItem::new(format!("Item {}", i), &std::collections::HashMap::new().insert(String::from("key1"), format!("Value{}", i))
+//!         ListItem::new(&format!("Item {}", i), &item_data)
 //!     );
 //! }
 //! 
-//! let listview = ListView::new(50, 25, &items, String::from("Name"), vec!(String::from("key1")), None, None);
+//! let mut listview = ListView::new(50, 25, &items, String::from("Name"), vec!(String::from("key1")), None, None);
 //! 
 //! listview.display();
 //! 
 //! // ...
 //! 
-//! listview.sort_by(String::from("key1"), Ordering::Inversed); // Sort by "key1" in descending order
+//! listview.sort_by(Some(String::from("key1")), Some(Ordering::Inversed)); // Sort by "key1" in descending order
 //! ```
+
+
+
 
 use std::fmt::Write;
 
@@ -38,7 +50,6 @@ pub struct ListView {
 impl ListView {
     /// # Create a new ListView
     /// ## Arguments
-    ///
     /// * `cols` - Represent the width of the chart in cells
     /// * `rows` - Represent the height of the chart in cells
     /// * `items` - List of [ListItem] to be displayed in the ListView
@@ -194,9 +205,12 @@ impl ListView {
     }
 
     /// # Resize the ListView
-    pub fn resize(&mut self, height: i32, width: i32) {
-        self.rows = height;
-        self.cols = width;
+    /// ## Arguments
+    /// * `rows` - The new height of the ListView
+    /// * `cols` - The new width of the ListView
+    pub fn resize(&mut self, rows: i32, cols: i32) {
+        self.rows = rows;
+        self.cols = cols;
         if self.selected_line > self.rows - 1 {
             self.selected_line = self.rows - 1;
             self.start_index = self.counter - (self.rows - 2);
@@ -204,6 +218,9 @@ impl ListView {
     }
 
     /// # Update the list of ListItem contained in the ListView
+    /// ## Arguments
+    /// * `items` - New list of items to be displayed in the ListView<br>
+    /// **⚠️ The `items` must include the same primary_key and secondary_keys as the previous set of [ListItem]**
     pub fn update_items(&mut self, items: &[ListItem]) {
         if items.len() < self.counter as usize + 1 {
             self.start_index -= self.counter + 1 - items.len() as i32;
@@ -219,7 +236,10 @@ impl ListView {
         &self.items[self.counter as usize]
     }
 
-    /// # Sort the ListView items by the provided key
+    /// # Update the way of sorting and sort the items
+    /// ## Arguments
+    /// * `key` - *`Optional`* - If provided, update the sorting key
+    /// * `ordering` - *`Optional`* - If provided, update the sorting order
     pub fn sort_by(&mut self, key: Option<String>, ordering: Option<Ordering>) {
         self.sort_key = key;
         self.ordering = ordering;
@@ -252,6 +272,10 @@ pub struct ListItem {
 }
 
 impl ListItem {
+    /// # Create a new ListItem
+    /// ## Arguments
+    /// * `name` - The name of the item, used as the `primary_key` value in the [ListView]
+    /// * `data` - Pair of key / value, each value associated with a key will be used in the corrresponding cols corresponding to his key in the [ListView]
     pub fn new(name: &str, data: &std::collections::HashMap<String, String>) -> ListItem {
         ListItem{name: name.to_string(), data: data.clone()}
     }

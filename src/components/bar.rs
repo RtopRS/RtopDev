@@ -2,11 +2,16 @@
 //! 
 //! ## Example
 //! ```rust
-//! println!("TODO");
+//! use rtop_dev::components::bar::*;
+//! 
+//! 
+//! let bar = HorizontalBar::new(3, 24, Some(Color::Blue)); // Create a blue Horizontal ProgressBar with 3 cells of height and 24 cells of width
+//! bar.display(50.0);
 //! ```
 
 use std::fmt::Write;
 
+/// Vertical ProgressBar, designed to be ready to use in Rtop
 pub struct VerticalBar {
     rows: i32,
     cols: i32,
@@ -15,7 +20,6 @@ pub struct VerticalBar {
 impl VerticalBar {
     /// # Return a formatted String ready to be display in rtop
     /// ## Arguments
-    /// 
     /// * `pourcent` - Represent the progress of the VerticlaBar<br>
     /// **⚠️ The `pourcent` must be between 0.0 and 100.0**
     pub fn display(&self, pourcent: f32) -> String {
@@ -42,14 +46,14 @@ impl VerticalBar {
         bar_parts.insert(8, "█");
 
         if pourcent == 100. {
-            out += &format!("{}{}{}\n", color, "█".repeat(self.width as usize), color).repeat(self.height as usize);
+            out += &format!("{}{}{}\n", color, "█".repeat(self.cols as usize), color).repeat(self.rows as usize);
         } else {
-            let block_filled = (self.height as f32 * 8. * (pourcent / 100.)) as i32;
-            let white_lines = (self.height - 1 - (self.height as f32 * (pourcent / 100.)) as i32) as usize;
+            let block_filled = (self.rows as f32 * 8. * (pourcent / 100.)) as i32;
+            let white_lines = (self.rows - 1 - (self.rows as f32 * (pourcent / 100.)) as i32) as usize;
 
-            out += &format!("{}{}{}\n", color, " ".repeat(self.width as usize), color).repeat(white_lines);
-            writeln!(&mut out, "{}{}{}", color, bar_parts[&(block_filled % 8)].repeat(self.width as usize), color).unwrap();
-            out += &format!("{}{}{}\n", color, "█".repeat(self.width as usize), color).repeat(self.height as usize - white_lines - 1);
+            out += &format!("{}{}{}\n", color, " ".repeat(self.cols as usize), color).repeat(white_lines);
+            writeln!(&mut out, "{}{}{}", color, bar_parts[&(block_filled % 8)].repeat(self.cols as usize), color).unwrap();
+            out += &format!("{}{}{}\n", color, "█".repeat(self.cols as usize), color).repeat(self.rows as usize - white_lines - 1);
         }
 
         out
@@ -57,7 +61,6 @@ impl VerticalBar {
 
     /// # Create a new VerticalBar
     /// ## Arguments
-    /// 
     /// * `cols` - Represent the width of the bar in cells
     /// * `rows` - Represent the height of the bar in cells
     /// * `color` - *`Optional`* - If supplied, set the color of the progress of the bar, otehrwise, it will be green
@@ -66,12 +69,17 @@ impl VerticalBar {
     }
 }
 
+/// Horizontal ProgressBar, designed to be ready to use in Rtop to represent progress and other stuff
 pub struct HorizontalBar {
     rows: i32,
     cols: i32,
     color: Color
 }
 impl HorizontalBar {
+    /// # Return a formatted String ready to be display in rtop
+    /// ## Arguments
+    /// * `pourcent` - Represent the progress of the VerticlaBar<br>
+    /// **⚠️ The `pourcent` must be between 0.0 and 100.0**
     pub fn display(&self, pourcent: f32) -> String {
         let color = match self.color {
             Color::Red => "[[EFFECT_COLOR_RED_BLACK]]",
@@ -95,13 +103,13 @@ impl HorizontalBar {
         bar_parts.insert(7, "▉");
         bar_parts.insert(8, "█");
 
-        let block_filled = (self.width as f32 * 8. * (pourcent / 100.)) as i32;
-        let white_lines = (self.width - 1 - (self.width as f32 * (pourcent / 100.)) as i32) as usize;
+        let block_filled = (self.cols as f32 * 8. * (pourcent / 100.)) as i32;
+        let white_lines = (self.cols - 1 - (self.cols as f32 * (pourcent / 100.)) as i32) as usize;
 
         if pourcent == 100. {
-            out += &format!("{}{}{}\n", color, bar_parts[&8].repeat(self.width as usize), color).repeat(self.height as usize);
+            out += &format!("{}{}{}\n", color, bar_parts[&8].repeat(self.cols as usize), color).repeat(self.rows as usize);
         } else {
-            out += &format!("{}{}{}{}{}\n", color, bar_parts[&8].repeat((block_filled / 8) as usize), bar_parts[&(block_filled % 8)], " ".repeat(white_lines), color).repeat(self.height as usize);
+            out += &format!("{}{}{}{}{}\n", color, bar_parts[&8].repeat((block_filled / 8) as usize), bar_parts[&(block_filled % 8)], " ".repeat(white_lines), color).repeat(self.rows as usize);
         }
 
         out
@@ -109,7 +117,6 @@ impl HorizontalBar {
 
     /// # Create a new HorizontalBar
     /// ## Arguments
-    /// 
     /// * `cols` - Represent the width of the bar in cells
     /// * `rows` - Represent the height of the bar in cells
     /// * `color` - *`Optional`* - If supplied, set the color of the progress of the bar, otehrwise, it will be green

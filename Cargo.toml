@@ -2,7 +2,7 @@
 name = "rtop_dev"
 version = "1.0.0-beta.2"
 edition = "2021"
-description = "Development librairy for creating pluign for RtopRS"
+description = "Development librairy for creating plugin for RtopRS"
 repository = "https://github.com/RTopRS/RtopDev"
 readme = "README.md"
 license = "MPL-2.0"

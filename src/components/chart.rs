@@ -2,10 +2,13 @@
 //! 
 //! ## Example
 //! ```rust
+//! use rtop_dev::components::chart::Chart;
+//! 
+//! 
 //! let data: Vec<i32> = vec!(20, 15, 14, 20, 8, 0, 9);
-//! let chart = Chart::new(0, 0, Some(20), Some(true), Some(String::from("Out of 20")));
+//! let mut chart = Chart::new(0, 0, Some(20), Some(true), Some(String::from("Out of 20")));
 //! chart.resize(50, 25); // Resize the chart with a width of 50 and a height of 25 cells
-//! let result = chart.display();
+//! let result = chart.display(&data);
 //! ```
 
 use std::fmt::Write;
@@ -30,6 +33,8 @@ pub struct Chart {
 
 impl Chart {
     /// # Create the chart and return a formatted string ready to be displayed in Rtop
+    /// ## Arguments
+    /// * `percents` - List of data used to create the graph
     pub fn display(&self, percents: &[i32]) -> String {
         let mut data = percents.to_vec();
         if percents.len() >= (self.cols * 2) as usize {
@@ -145,13 +150,24 @@ impl Chart {
         final_graph
     }
 
-    /// # Resize the chart
+    /// # Resize the Chart
+    /// ## Arguments
+    /// * `rows` - The new height of the Chart
+    /// * `cols` - The new width of the Chart
     pub fn resize(&mut self, cols: i32, rows: i32) {
         self.cols = cols;
         self.rows = rows;
     }
 
     /// # Create a new chart
+    /// ## Arguments
+    /// * `cols` - The width of the Chart in cells
+    /// * `rows` - The height of the Chart in cells
+    /// * `higher_value` - *`Optional`* - If supplied, set the value that a number in the data must be to be concidered as max. Otherwise, it will be 100.<br>
+    /// For example, setting it to 50 and display number 40 in the Chart will display a line at 80% of the Chart's height
+    /// * `show_unit` - *`Optional`* - If supplied, select if the current data value should be shown on the top right corner of the Chart
+    /// * `unit_suffix` - *`Optional`* - If supplied, set the suffix displayed after the current data.<br>
+    /// **⚠️ Work only if `show_unit` is set to True. Otehrwise, the option has no affect.**
     pub fn new(cols: i32, rows: i32, higher_value: Option<i32>, show_unit: Option<bool>, unit_suffix: Option<String>) -> Self {
         Self{cols, rows, higher_value: higher_value.unwrap_or(100), show_unit: show_unit.unwrap_or(false), unit_suffix: unit_suffix.unwrap_or_else(|| String::from("%"))}
     }
