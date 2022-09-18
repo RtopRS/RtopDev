@@ -1,10 +1,10 @@
 //! # Components representing a ProgressBar
-//! 
+//!
 //! ## Example
 //! ```rust
 //! use rtop_dev::components::bar::*;
-//! 
-//! 
+//!
+//!
 //! let bar = HorizontalBar::new(3, 24, Some(Color::Blue)); // Create a blue Horizontal ProgressBar with 3 cells of height and 24 cells of width
 //! bar.display(50.0);
 //! ```
@@ -15,7 +15,7 @@ use std::fmt::Write;
 pub struct VerticalBar {
     rows: i32,
     cols: i32,
-    color: Color
+    color: Color,
 }
 impl VerticalBar {
     /// # Return a formatted String ready to be display in rtop
@@ -30,7 +30,7 @@ impl VerticalBar {
             Color::Blue => "[[EFFECT_COLOR_BLUE_BLACK]]",
             Color::Magenta => "[[EFFECT_COLOR_MAGENTA_BLACK]]",
             Color::Cyan => "[[EFFECT_COLOR_CYAN_BLACK]]",
-            Color::White => "[[EFFECT_COLOR_WHITE_BLACK]]"
+            Color::White => "[[EFFECT_COLOR_WHITE_BLACK]]",
         };
 
         let mut out = String::new();
@@ -46,14 +46,25 @@ impl VerticalBar {
         bar_parts.insert(8, "█");
 
         if pourcent == 100. {
-            out += &format!("{}{}{}\n", color, "█".repeat(self.cols as usize), color).repeat(self.rows as usize);
+            out += &format!("{}{}{}\n", color, "█".repeat(self.cols as usize), color)
+                .repeat(self.rows as usize);
         } else {
             let block_filled = (self.rows as f32 * 8. * (pourcent / 100.)) as i32;
-            let white_lines = (self.rows - 1 - (self.rows as f32 * (pourcent / 100.)) as i32) as usize;
+            let white_lines =
+                (self.rows - 1 - (self.rows as f32 * (pourcent / 100.)) as i32) as usize;
 
-            out += &format!("{}{}{}\n", color, " ".repeat(self.cols as usize), color).repeat(white_lines);
-            writeln!(&mut out, "{}{}{}", color, bar_parts[&(block_filled % 8)].repeat(self.cols as usize), color).unwrap();
-            out += &format!("{}{}{}\n", color, "█".repeat(self.cols as usize), color).repeat(self.rows as usize - white_lines - 1);
+            out += &format!("{}{}{}\n", color, " ".repeat(self.cols as usize), color)
+                .repeat(white_lines);
+            writeln!(
+                &mut out,
+                "{}{}{}",
+                color,
+                bar_parts[&(block_filled % 8)].repeat(self.cols as usize),
+                color
+            )
+            .unwrap();
+            out += &format!("{}{}{}\n", color, "█".repeat(self.cols as usize), color)
+                .repeat(self.rows as usize - white_lines - 1);
         }
 
         out
@@ -65,7 +76,11 @@ impl VerticalBar {
     /// * `rows` - Represent the height of the bar in cells
     /// * `color` - *`Optional`* - If supplied, set the color of the progress of the bar, otehrwise, it will be green
     pub fn new(rows: i32, cols: i32, color: Option<Color>) -> VerticalBar {
-        VerticalBar{rows, cols, color: color.unwrap_or(Color::Green)}
+        VerticalBar {
+            rows,
+            cols,
+            color: color.unwrap_or(Color::Green),
+        }
     }
 }
 
@@ -73,7 +88,7 @@ impl VerticalBar {
 pub struct HorizontalBar {
     rows: i32,
     cols: i32,
-    color: Color
+    color: Color,
 }
 impl HorizontalBar {
     /// # Return a formatted String ready to be display in rtop
@@ -88,7 +103,7 @@ impl HorizontalBar {
             Color::Blue => "[[EFFECT_COLOR_BLUE_BLACK]]",
             Color::Magenta => "[[EFFECT_COLOR_MAGENTA_BLACK]]",
             Color::Cyan => "[[EFFECT_COLOR_CYAN_BLACK]]",
-            Color::White => "[[EFFECT_COLOR_WHITE_BLACK]]"
+            Color::White => "[[EFFECT_COLOR_WHITE_BLACK]]",
         };
 
         let mut out = String::new();
@@ -107,9 +122,23 @@ impl HorizontalBar {
         let white_lines = (self.cols - 1 - (self.cols as f32 * (pourcent / 100.)) as i32) as usize;
 
         if pourcent == 100. {
-            out += &format!("{}{}{}\n", color, bar_parts[&8].repeat(self.cols as usize), color).repeat(self.rows as usize);
+            out += &format!(
+                "{}{}{}\n",
+                color,
+                bar_parts[&8].repeat(self.cols as usize),
+                color
+            )
+            .repeat(self.rows as usize);
         } else {
-            out += &format!("{}{}{}{}{}\n", color, bar_parts[&8].repeat((block_filled / 8) as usize), bar_parts[&(block_filled % 8)], " ".repeat(white_lines), color).repeat(self.rows as usize);
+            out += &format!(
+                "{}{}{}{}{}\n",
+                color,
+                bar_parts[&8].repeat((block_filled / 8) as usize),
+                bar_parts[&(block_filled % 8)],
+                " ".repeat(white_lines),
+                color
+            )
+            .repeat(self.rows as usize);
         }
 
         out
@@ -121,7 +150,11 @@ impl HorizontalBar {
     /// * `rows` - Represent the height of the bar in cells
     /// * `color` - *`Optional`* - If supplied, set the color of the progress of the bar, otehrwise, it will be green
     pub fn new(rows: i32, cols: i32, color: Option<Color>) -> HorizontalBar {
-        HorizontalBar{rows, cols, color: color.unwrap_or(Color::Green)}
+        HorizontalBar {
+            rows,
+            cols,
+            color: color.unwrap_or(Color::Green),
+        }
     }
 }
 
@@ -133,5 +166,5 @@ pub enum Color {
     Blue,
     Magenta,
     Cyan,
-    White
+    White,
 }

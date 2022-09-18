@@ -1,4 +1,4 @@
-//! Rtop SDK to create plugin. Made with ❤️ for you.
+//! Rtop SDK to create plugin, made with ❤️ for you.
 //! ## Example Usage
 //! Firstly, create a new project for your plugin!
 //! ```
@@ -17,6 +17,12 @@
 //! [lib]
 //! name = "my_plugin"
 //! crate-type = ["cdylib"]
+//!
+//! [profile.release]
+//! codegen-units = 1
+//! panic = "abort"
+//! strip = true
+//! lto = true
 //! ```
 //! Then, edit your `src/lib.rs` to have somethings like this:
 //! ```rust

@@ -1,10 +1,10 @@
 //! # Components representing a Graph
-//! 
+//!
 //! ## Example
 //! ```rust
 //! use rtop_dev::components::chart::Chart;
-//! 
-//! 
+//!
+//!
 //! let data: Vec<i32> = vec!(20, 15, 14, 20, 8, 0, 9);
 //! let mut chart = Chart::new(0, 0, Some(20), Some(true), Some(String::from("Out of 20")));
 //! chart.resize(50, 25); // Resize the chart with a width of 50 and a height of 25 cells
@@ -28,7 +28,7 @@ pub struct Chart {
     pub higher_value: i32,
 
     /// Define the suffix displayed after the current value if it displayed
-    pub unit_suffix: String 
+    pub unit_suffix: String,
 }
 
 impl Chart {
@@ -43,7 +43,8 @@ impl Chart {
         data.reverse();
 
         let space_to_add = self.cols as f32 - (data.len() as f32 / 2.);
-        let mut chart_chars: std::collections::HashMap<&str, String> = std::collections::HashMap::new();
+        let mut chart_chars: std::collections::HashMap<&str, String> =
+            std::collections::HashMap::new();
 
         chart_chars.insert("10", String::from("⡀"));
         chart_chars.insert("20", String::from("⡄"));
@@ -91,49 +92,69 @@ impl Chart {
         let mut final_graph = String::new();
         if !data.is_empty() {
             if self.show_unit {
-                writeln!(&mut final_graph, "{}{}{}", " ".repeat((self.cols - data[0].to_string().chars().count() as i32 - self.unit_suffix.chars().count() as i32) as usize), data[0], self.unit_suffix).unwrap();
+                writeln!(
+                    &mut final_graph,
+                    "{}{}{}",
+                    " ".repeat(
+                        (self.cols
+                            - data[0].to_string().chars().count() as i32
+                            - self.unit_suffix.chars().count() as i32)
+                            as usize
+                    ),
+                    data[0],
+                    self.unit_suffix
+                )
+                .unwrap();
             }
 
-            let mut tmp = vec!();
+            let mut tmp = vec![];
 
             for row in 0..graph_rows {
                 let mut i = 0;
                 while i < data.len() {
                     let percent_one = data[i];
-                    let mut tmp_one = percent_one as f32 / self.higher_value as f32 * self.rows as f32 * 4.;
+                    let mut tmp_one =
+                        percent_one as f32 / self.higher_value as f32 * self.rows as f32 * 4.;
                     if tmp_one < 1. {
                         tmp_one = 1.;
                     }
                     let mut full_block_to_add_one = tmp_one as i32 - (4 * row);
-    
+
                     let mut percent_two = 0;
-                    let mut tmp_two = percent_two as f32 / self.higher_value as f32 * self.rows as f32 * 4.;
+                    let mut tmp_two =
+                        percent_two as f32 / self.higher_value as f32 * self.rows as f32 * 4.;
                     let mut full_block_to_add_two = tmp_two as i32 - (4 * row);
-    
-                    if i as usize + 1 < data.len() {    
+
+                    if i as usize + 1 < data.len() {
                         percent_two = data[i + 1];
-                        tmp_two = percent_two as f32 / self.higher_value as f32 * self.rows as f32 * 4.;
+                        tmp_two =
+                            percent_two as f32 / self.higher_value as f32 * self.rows as f32 * 4.;
                         if tmp_two < 1. {
                             tmp_two = 1.;
                         }
                         full_block_to_add_two = tmp_two as i32 - (4 * row);
                     }
-    
+
                     if full_block_to_add_one < 0 {
                         full_block_to_add_one = 0;
                     }
                     if full_block_to_add_two < 0 {
                         full_block_to_add_two = 0;
                     }
-    
+
                     if full_block_to_add_one > 4 {
                         full_block_to_add_one = 4;
                     }
                     if full_block_to_add_two > 4 {
                         full_block_to_add_two = 4;
                     }
-    
-                    graph = format!("{}{}", graph, chart_chars[&format!("{}{}",full_block_to_add_two, full_block_to_add_one)[..]]);
+
+                    graph = format!(
+                        "{}{}",
+                        graph,
+                        chart_chars
+                            [&format!("{}{}", full_block_to_add_two, full_block_to_add_one)[..]]
+                    );
                     i += 2
                 }
 
@@ -143,7 +164,13 @@ impl Chart {
 
             tmp.reverse();
             for line in tmp {
-                writeln!(&mut final_graph, "{}{}", " ".repeat(space_to_add as usize), line.chars().rev().collect::<String>()).unwrap();
+                writeln!(
+                    &mut final_graph,
+                    "{}{}",
+                    " ".repeat(space_to_add as usize),
+                    line.chars().rev().collect::<String>()
+                )
+                .unwrap();
             }
         }
 
@@ -168,7 +195,19 @@ impl Chart {
     /// * `show_unit` - *`Optional`* - If supplied, select if the current data value should be shown on the top right corner of the Chart
     /// * `unit_suffix` - *`Optional`* - If supplied, set the suffix displayed after the current data.<br>
     /// **⚠️ Work only if `show_unit` is set to True. Otehrwise, the option has no affect.**
-    pub fn new(cols: i32, rows: i32, higher_value: Option<i32>, show_unit: Option<bool>, unit_suffix: Option<String>) -> Self {
-        Self{cols, rows, higher_value: higher_value.unwrap_or(100), show_unit: show_unit.unwrap_or(false), unit_suffix: unit_suffix.unwrap_or_else(|| String::from("%"))}
+    pub fn new(
+        cols: i32,
+        rows: i32,
+        higher_value: Option<i32>,
+        show_unit: Option<bool>,
+        unit_suffix: Option<String>,
+    ) -> Self {
+        Self {
+            cols,
+            rows,
+            higher_value: higher_value.unwrap_or(100),
+            show_unit: show_unit.unwrap_or(false),
+            unit_suffix: unit_suffix.unwrap_or_else(|| String::from("%")),
+        }
     }
 }
