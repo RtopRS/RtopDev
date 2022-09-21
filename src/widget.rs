@@ -17,6 +17,6 @@ pub trait Widget {
     /// ```⚠️ Only called if input is defined to true when creating the widget```
     fn on_input(&mut self, _key: String) {}
 
-    /// # Called once when a widget is loaded. Can be used to init some informations
+    /// # Called once when a widget is loaded. Can be used to init some information
     fn init(&mut self) {}
 }

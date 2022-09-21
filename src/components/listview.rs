@@ -354,7 +354,7 @@ impl ListView {
 /// Represent an item of a [`ListView`]
 #[derive(Clone)]
 pub struct ListItem {
-    /// Represent the "ID" of the item, it will be used as the value of the primary_key when displayed in a [ListView]
+    /// Represent the "ID" of the item, it will be used as the value of the `primary_key` when displayed in a [ListView]
     pub name: String,
     /// A collection of key / value pair. Each pair will be used and displayed in the secondary keys column of the [ListView]
     pub data: std::collections::HashMap<String, String>,
@@ -364,7 +364,7 @@ impl ListItem {
     /// # Create a new `ListItem`
     /// ## Arguments
     /// * `name` - The name of the item, used as the `primary_key` value in the [`ListView`]
-    /// * `data` - Pair of key / value, each value associated with a key will be used in the corrresponding cols corresponding to his key in the [`ListView`]
+    /// * `data` - Pair of key / value, each value associated with a key will be used in the corresponding cols corresponding to his key in the [`ListView`]
     pub fn new(name: &str, data: &std::collections::HashMap<String, String>) -> Self {
         Self {
             name: String::from(name),

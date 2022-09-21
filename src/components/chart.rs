@@ -191,11 +191,11 @@ impl Chart {
     /// ## Arguments
     /// * `cols` - The width of the Chart in cells
     /// * `rows` - The height of the Chart in cells
-    /// * `higher_value` - *`Optional`* - If supplied, set the value that a number in the data must be to be concidered as max. Otherwise, it will be 100.<br>
+    /// * `higher_value` - *`Optional`* - If supplied, set the value that a number in the data must be to be considered as max. Otherwise, it will be 100.<br>
     /// For example, setting it to 50 and display number 40 in the Chart will display a line at 80% of the Chart's height
     /// * `show_unit` - *`Optional`* - If supplied, select if the current data value should be shown on the top right corner of the Chart
     /// * `unit_suffix` - *`Optional`* - If supplied, set the suffix displayed after the current data.<br>
-    /// **⚠️ Work only if `show_unit` is set to True. Otehrwise, the option has no affect.**
+    /// **⚠️ Work only if `show_unit` is set to True. Otherwise, the option has no affect.**
     pub fn new(
         cols: i32,
         rows: i32,

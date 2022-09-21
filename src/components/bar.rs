@@ -18,9 +18,9 @@ pub struct Vertical {
     color: Color,
 }
 impl Vertical {
-    /// # Return a formatted String ready to be display in rtop
+    /// # Return a formatted String ready to be display in Rtop
     /// ## Arguments
-    /// * `pourcent` - Represent the progress of the `Verticla`<br>
+    /// * `pourcent` - Represent the progress of the bar<br>
     /// **⚠️ The `pourcent` must be between 0.0 and 100.0**
     pub fn display(&self, pourcent: f32) -> String {
         let color = match self.color {
@@ -74,7 +74,7 @@ impl Vertical {
     /// ## Arguments
     /// * `cols` - Represent the width of the bar in cells
     /// * `rows` - Represent the height of the bar in cells
-    /// * `color` - *`Optional`* - If supplied, set the color of the progress of the bar, otehrwise, it will be green
+    /// * `color` - *`Optional`* - If supplied, set the color of the progress of the bar, otherwise, it will be green
     pub fn new(rows: i32, cols: i32, color: Option<Color>) -> Self {
         Self {
             rows,
@@ -91,9 +91,9 @@ pub struct Horizontal {
     color: Color,
 }
 impl Horizontal {
-    /// # Return a formatted String ready to be display in rtop
+    /// # Return a formatted String ready to be display in Rtop
     /// ## Arguments
-    /// * `pourcent` - Represent the progress of the `VerticlaBar`<br>
+    /// * `pourcent` - Represent the progress of the bar<br>
     /// **⚠️ The `pourcent` must be between 0.0 and 100.0**
     pub fn display(&self, pourcent: f32) -> String {
         let color = match self.color {
@@ -148,7 +148,7 @@ impl Horizontal {
     /// ## Arguments
     /// * `cols` - Represent the width of the bar in cells
     /// * `rows` - Represent the height of the bar in cells
-    /// * `color` - *`Optional`* - If supplied, set the color of the progress of the bar, otehrwise, it will be green
+    /// * `color` - *`Optional`* - If supplied, set the color of the progress of the bar, otherwise, it will be green
     pub fn new(rows: i32, cols: i32, color: Option<Color>) -> Self {
         Self {
             rows,
