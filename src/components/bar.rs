@@ -1,26 +1,26 @@
-//! # Components representing a ProgressBar
+//! # Components representing a `ProgressBar`
 //!
 //! ## Example
 //! ```rust
 //! use rtop_dev::components::bar::*;
 //!
 //!
-//! let bar = HorizontalBar::new(3, 24, Some(Color::Blue)); // Create a blue Horizontal ProgressBar with 3 cells of height and 24 cells of width
+//! let bar = Horizontal::new(3, 24, Some(Color::Blue)); // Create a blue Horizontal ProgressBar with 3 cells of height and 24 cells of width
 //! bar.display(50.0);
 //! ```
 
 use std::fmt::Write;
 
-/// Vertical ProgressBar, designed to be ready to use in Rtop
-pub struct VerticalBar {
+/// Vertical `ProgressBar`, designed to be ready to use in Rtop
+pub struct Vertical {
     rows: i32,
     cols: i32,
     color: Color,
 }
-impl VerticalBar {
+impl Vertical {
     /// # Return a formatted String ready to be display in rtop
     /// ## Arguments
-    /// * `pourcent` - Represent the progress of the VerticlaBar<br>
+    /// * `pourcent` - Represent the progress of the `Verticla`<br>
     /// **⚠️ The `pourcent` must be between 0.0 and 100.0**
     pub fn display(&self, pourcent: f32) -> String {
         let color = match self.color {
@@ -70,13 +70,13 @@ impl VerticalBar {
         out
     }
 
-    /// # Create a new VerticalBar
+    /// # Create a new `Vertical`
     /// ## Arguments
     /// * `cols` - Represent the width of the bar in cells
     /// * `rows` - Represent the height of the bar in cells
     /// * `color` - *`Optional`* - If supplied, set the color of the progress of the bar, otehrwise, it will be green
-    pub fn new(rows: i32, cols: i32, color: Option<Color>) -> VerticalBar {
-        VerticalBar {
+    pub fn new(rows: i32, cols: i32, color: Option<Color>) -> Self {
+        Self {
             rows,
             cols,
             color: color.unwrap_or(Color::Green),
@@ -84,16 +84,16 @@ impl VerticalBar {
     }
 }
 
-/// Horizontal ProgressBar, designed to be ready to use in Rtop to represent progress and other stuff
-pub struct HorizontalBar {
+/// Horizontal `ProgressBar`, designed to be ready to use in Rtop to represent progress and other stuff
+pub struct Horizontal {
     rows: i32,
     cols: i32,
     color: Color,
 }
-impl HorizontalBar {
+impl Horizontal {
     /// # Return a formatted String ready to be display in rtop
     /// ## Arguments
-    /// * `pourcent` - Represent the progress of the VerticlaBar<br>
+    /// * `pourcent` - Represent the progress of the `VerticlaBar`<br>
     /// **⚠️ The `pourcent` must be between 0.0 and 100.0**
     pub fn display(&self, pourcent: f32) -> String {
         let color = match self.color {
@@ -144,13 +144,13 @@ impl HorizontalBar {
         out
     }
 
-    /// # Create a new HorizontalBar
+    /// # Create a new `Horizontal`
     /// ## Arguments
     /// * `cols` - Represent the width of the bar in cells
     /// * `rows` - Represent the height of the bar in cells
     /// * `color` - *`Optional`* - If supplied, set the color of the progress of the bar, otehrwise, it will be green
-    pub fn new(rows: i32, cols: i32, color: Option<Color>) -> HorizontalBar {
-        HorizontalBar {
+    pub fn new(rows: i32, cols: i32, color: Option<Color>) -> Self {
+        Self {
             rows,
             cols,
             color: color.unwrap_or(Color::Green),
@@ -159,6 +159,7 @@ impl HorizontalBar {
 }
 
 /// Represent a Color of progress for the Bar
+#[non_exhaustive]
 pub enum Color {
     Red,
     Green,

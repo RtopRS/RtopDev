@@ -30,7 +30,7 @@
 
 use std::fmt::Write;
 
-/// Display list of [ListItem] with table header, ordering and other stuffs
+/// Display list of [`ListItem`] with table header, ordering and other stuffs
 pub struct ListView {
     cols: i32,
     rows: i32,
@@ -45,13 +45,13 @@ pub struct ListView {
 }
 
 impl ListView {
-    /// # Create a new ListView
+    /// # Create a new `ListView`
     /// ## Arguments
     /// * `cols` - Represent the width of the chart in cells
     /// * `rows` - Represent the height of the chart in cells
-    /// * `items` - List of [ListItem] to be displayed in the ListView
-    /// * `primary_key` - Table name, displayed on the left of the ListView header, the value will be filled with the `name` filed of the [ListItem]
-    /// * `secondary_keys` - List of all secondary columns, displayed on the right of the ListView header, the value will be filled with the value associated with the column name in the `data` field of the [ListItem]
+    /// * `items` - List of [`ListItem`] to be displayed in the `ListView`
+    /// * `primary_key` - Table name, displayed on the left of the `ListView` header, the value will be filled with the `name` filed of the [`ListItem`]
+    /// * `secondary_keys` - List of all secondary columns, displayed on the right of the `ListView` header, the value will be filled with the value associated with the column name in the `data` field of the [`ListItem`]
     /// * `sort_key` - *`Optional`* - If supplied, the items will be ordered by the value of the selected column.<br>
     /// **⚠️ The `sort_key` must be one of the `secondary_keys` or the `primary_key`, otherwise, no sort will be applied**
     /// * `ordering` - *`Optional`* - If supplied, change the ordering direction
@@ -63,8 +63,8 @@ impl ListView {
         secondary_keys: Vec<String>,
         sort_key: Option<String>,
         ordering: Option<Ordering>,
-    ) -> ListView {
-        let mut created_listview = ListView {
+    ) -> Self {
+        let mut created_listview = Self {
             rows,
             cols,
             counter: 0,
@@ -96,10 +96,10 @@ impl ListView {
     pub fn next(&mut self) {
         if self.counter < self.items.len() as i32 - 1 {
             self.counter += 1;
-            if self.selected_line != self.rows - 1 {
-                self.selected_line += 1;
-            } else {
+            if self.selected_line == self.rows - 1 {
                 self.start_index += 1;
+            } else {
+                self.selected_line += 1;
             }
         }
     }
@@ -128,14 +128,14 @@ impl ListView {
             secondary_keys_len.insert(key.to_string(), key.len() + 2);
         }
 
-        let mut displayed_items = &self.items[..];
+        let mut displayed_items = &*self.items;
 
         for item in displayed_items {
             for key_value in &item.data {
                 if secondary_keys_len.contains_key(key_value.0) {
                     let tmp = secondary_keys_len[key_value.0];
                     if key_value.1.len() + 2 > tmp {
-                        *secondary_keys_len.get_mut(key_value.0).unwrap() = key_value.1.len() + 2
+                        *secondary_keys_len.get_mut(key_value.0).unwrap() = key_value.1.len() + 2;
                     }
                 }
             }
@@ -146,17 +146,18 @@ impl ListView {
             if let Some(sort_key) = &self.sort_key {
                 if key == sort_key {
                     if let Some(ordering) = &self.ordering {
-                        secondary_cols += &match ordering {
-                            Ordering::Default => format!(
+                        secondary_cols += &if ordering == &Ordering::Default {
+                            format!(
                                 "[[EFFECT_BOLD]]{}[[EFFECT_BOLD]]{}",
                                 key,
                                 " ".repeat(secondary_keys_len[key] - key.len())
-                            ),
-                            _ => format!(
+                            )
+                        } else {
+                            format!(
                                 "[[EFFECT_ITALIC]]{}[[EFFECT_ITALIC]]{}",
                                 key,
                                 " ".repeat(secondary_keys_len[key] - key.len())
-                            ),
+                            )
                         };
                     } else {
                         write!(
@@ -193,7 +194,7 @@ impl ListView {
                 if let Some(ordering) = &self.ordering {
                     tmp = match ordering {
                         Ordering::Default => 30,
-                        _ => 32,
+                        Ordering::Inversed => 32,
                     };
                 }
             }
@@ -203,11 +204,10 @@ impl ListView {
         if let Some(sort_key) = &self.sort_key {
             if &self.primary_key == sort_key {
                 if let Some(ordering) = &self.ordering {
-                    name_to_define = match ordering {
-                        Ordering::Default => {
-                            format!("[[EFFECT_BOLD]]{}[[EFFECT_BOLD]]", self.primary_key)
-                        }
-                        _ => format!("[[EFFECT_ITALIC]]{}[[EFFECT_ITALIC]]", self.primary_key),
+                    name_to_define = if ordering == &Ordering::Default {
+                        format!("[[EFFECT_BOLD]]{}[[EFFECT_BOLD]]", self.primary_key)
+                    } else {
+                        format!("[[EFFECT_ITALIC]]{}[[EFFECT_ITALIC]]", self.primary_key)
                     };
                 }
             }
@@ -266,7 +266,7 @@ impl ListView {
                     )
                     .unwrap();
                 } else {
-                    output_string.push_str(&" ".repeat(len))
+                    output_string.push_str(&" ".repeat(len));
                 }
             }
 
@@ -280,10 +280,10 @@ impl ListView {
         output_string
     }
 
-    /// # Resize the ListView
+    /// # Resize the `ListView`
     /// ## Arguments
-    /// * `rows` - The new height of the ListView
-    /// * `cols` - The new width of the ListView
+    /// * `rows` - The new height of the `ListView`
+    /// * `cols` - The new width of the `ListView`
     pub fn resize(&mut self, rows: i32, cols: i32) {
         self.rows = rows;
         self.cols = cols;
@@ -293,10 +293,10 @@ impl ListView {
         }
     }
 
-    /// # Update the list of ListItem contained in the ListView
+    /// # Update the list of `ListItem` contained in the `ListView`
     /// ## Arguments
-    /// * `items` - New list of items to be displayed in the ListView<br>
-    /// **⚠️ The `items` must include the same primary_key and secondary_keys as the previous set of [ListItem]**
+    /// * `items` - New list of items to be displayed in the `ListView`<br>
+    /// **⚠️ The `items` must include the same `primary_key` and `secondary_keys` as the previous set of [`ListItem`]**
     pub fn update_items(&mut self, items: &[ListItem]) {
         if items.len() < self.counter as usize + 1 {
             self.start_index -= self.counter + 1 - items.len() as i32;
@@ -307,7 +307,7 @@ impl ListView {
         self.sort();
     }
 
-    /// # Return the current selected ListItem
+    /// # Return the current selected `ListItem`
     pub fn select(&self) -> &ListItem {
         &self.items[self.counter as usize]
     }
@@ -325,9 +325,13 @@ impl ListView {
 
     fn sort(&mut self) {
         if let (Some(sort_key), Some(ordering)) = (&self.sort_key, &self.ordering) {
-            if sort_key != &self.primary_key {
+            if sort_key == &self.primary_key {
                 self.items.sort_by(|a, b| {
-                    (human_sort::compare(
+                    human_sort::compare(&b.name.to_lowercase(), &a.name.to_lowercase())
+                });
+            } else {
+                self.items.sort_by(|a, b| {
+                    human_sort::compare(
                         &b.data
                             .get(sort_key)
                             .unwrap_or(&String::new())
@@ -336,11 +340,7 @@ impl ListView {
                             .get(sort_key)
                             .unwrap_or(&String::new())
                             .to_lowercase(),
-                    ))
-                });
-            } else {
-                self.items.sort_by(|a, b| {
-                    (human_sort::compare(&b.name.to_lowercase(), &a.name.to_lowercase()))
+                    )
                 });
             }
 
@@ -351,7 +351,7 @@ impl ListView {
     }
 }
 
-/// Represent an item of a [ListView]
+/// Represent an item of a [`ListView`]
 #[derive(Clone)]
 pub struct ListItem {
     /// Represent the "ID" of the item, it will be used as the value of the primary_key when displayed in a [ListView]
@@ -361,21 +361,22 @@ pub struct ListItem {
 }
 
 impl ListItem {
-    /// # Create a new ListItem
+    /// # Create a new `ListItem`
     /// ## Arguments
-    /// * `name` - The name of the item, used as the `primary_key` value in the [ListView]
-    /// * `data` - Pair of key / value, each value associated with a key will be used in the corrresponding cols corresponding to his key in the [ListView]
-    pub fn new(name: &str, data: &std::collections::HashMap<String, String>) -> ListItem {
-        ListItem {
-            name: name.to_string(),
+    /// * `name` - The name of the item, used as the `primary_key` value in the [`ListView`]
+    /// * `data` - Pair of key / value, each value associated with a key will be used in the corrresponding cols corresponding to his key in the [`ListView`]
+    pub fn new(name: &str, data: &std::collections::HashMap<String, String>) -> Self {
+        Self {
+            name: String::from(name),
             data: data.clone(),
         }
     }
 }
 
-/// Represent the Sort Order of a [ListView]
+/// Represent the Sort Order of a [`ListView`]
 /// The default ordering is the alphabetical order for String and descending for the number
 #[derive(PartialEq, Eq)]
+#[non_exhaustive]
 pub enum Ordering {
     Default,
     Inversed,

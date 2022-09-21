@@ -36,10 +36,11 @@ impl Chart {
     /// ## Arguments
     /// * `percents` - List of data used to create the graph
     pub fn display(&self, percents: &[i32]) -> String {
-        let mut data = percents.to_vec();
-        if percents.len() >= (self.cols * 2) as usize {
-            data = percents[percents.len() - (self.cols * 2) as usize..].to_vec();
-        }
+        let mut data = if percents.len() >= (self.cols * 2) as usize {
+            percents[percents.len() - (self.cols * 2) as usize..].to_vec()
+        } else {
+            percents.to_vec()
+        };
         data.reverse();
 
         let space_to_add = self.cols as f32 - (data.len() as f32 / 2.);
@@ -84,10 +85,11 @@ impl Chart {
 
         let mut graph = String::new();
 
-        let mut graph_rows = self.rows;
-        if self.show_unit {
-            graph_rows = self.rows - 1;
-        }
+        let graph_rows = if self.show_unit {
+            self.rows - 1
+        } else {
+            self.rows
+        };
 
         let mut final_graph = String::new();
         if !data.is_empty() {
@@ -123,8 +125,6 @@ impl Chart {
                     let mut percent_two = 0;
                     let mut tmp_two =
                         percent_two as f32 / self.higher_value as f32 * self.rows as f32 * 4.;
-                    let mut full_block_to_add_two = tmp_two as i32 - (4 * row);
-
                     if i as usize + 1 < data.len() {
                         percent_two = data[i + 1];
                         tmp_two =
@@ -132,8 +132,9 @@ impl Chart {
                         if tmp_two < 1. {
                             tmp_two = 1.;
                         }
-                        full_block_to_add_two = tmp_two as i32 - (4 * row);
                     }
+
+                    let mut full_block_to_add_two = tmp_two as i32 - (4 * row);
 
                     if full_block_to_add_one < 0 {
                         full_block_to_add_one = 0;
@@ -153,9 +154,9 @@ impl Chart {
                         "{}{}",
                         graph,
                         chart_chars
-                            [&format!("{}{}", full_block_to_add_two, full_block_to_add_one)[..]]
+                            [&*format!("{}{}", full_block_to_add_two, full_block_to_add_one)]
                     );
-                    i += 2
+                    i += 2;
                 }
 
                 tmp.push(graph);

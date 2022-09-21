@@ -1,6 +1,6 @@
 [package]
 name = "rtop_dev"
-version = "1.0.0-beta.2"
+version = "1.0.0-beta.3"
 edition = "2021"
 description = "Development librairy for creating plugin for RtopRS"
 repository = "https://github.com/RTopRS/RtopDev"

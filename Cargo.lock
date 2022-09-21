@@ -10,7 +10,7 @@ checksum = "140a09c9305e6d5e557e2ed7cbc68e05765a7d4213975b87cb04920689cc6219"
 
 [[package]]
 name = "rtop_dev"
-version = "1.0.0-beta.2"
+version = "1.0.0-beta.3"
 dependencies = [
  "human-sort",
 ]
