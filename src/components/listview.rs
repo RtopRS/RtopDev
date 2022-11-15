@@ -188,11 +188,11 @@ impl ListView {
             }
         }
 
-        let mut tmp = 0; // TODO: rename this
+        let mut ordering_spaces_header = 0;
         if let Some(sort_key) = &self.sort_key {
             if &self.primary_key != sort_key && self.secondary_keys.contains(sort_key) {
                 if let Some(ordering) = &self.ordering {
-                    tmp = match ordering {
+                    ordering_spaces_header = match ordering {
                         Ordering::Default => 30,
                         Ordering::Inversed => 32,
                     };
@@ -200,11 +200,11 @@ impl ListView {
             }
         }
 
-        let mut name_to_define = String::from(&self.primary_key); // TODO rename name_to_define
+        let mut table_header_primary_col = String::from(&self.primary_key);
         if let Some(sort_key) = &self.sort_key {
             if &self.primary_key == sort_key {
                 if let Some(ordering) = &self.ordering {
-                    name_to_define = if ordering == &Ordering::Default {
+                    table_header_primary_col = if ordering == &Ordering::Default {
                         format!("[[EFFECT_BOLD]]{}[[EFFECT_BOLD]]", self.primary_key)
                     } else {
                         format!("[[EFFECT_ITALIC]]{}[[EFFECT_ITALIC]]", self.primary_key)
@@ -215,8 +215,8 @@ impl ListView {
 
         let mut output_string = format!(
             "{}{}{}\n",
-            name_to_define,
-            " ".repeat(self.cols as usize - self.primary_key.len() - secondary_cols.len() + tmp),
+            table_header_primary_col,
+            " ".repeat(self.cols as usize - self.primary_key.len() - secondary_cols.len() + ordering_spaces_header),
             secondary_cols
         );
         if displayed_items.len() > (self.rows - 1) as usize {
@@ -230,7 +230,7 @@ impl ListView {
                 .name
                 .chars()
                 .into_iter()
-                .take(self.cols as usize - secondary_cols.len() + tmp)
+                .take(self.cols as usize - secondary_cols.len() + ordering_spaces_header)
                 .collect::<String>();
             if i == self.selected_line {
                 write!(
@@ -238,7 +238,7 @@ impl ListView {
                     "[[EFFECT_REVERSE]]{}{}",
                     name,
                     " ".repeat(
-                        self.cols as usize - name.chars().count() - secondary_cols.len() + tmp
+                        self.cols as usize - name.chars().count() - secondary_cols.len() + ordering_spaces_header
                     )
                 )
                 .unwrap();
@@ -248,7 +248,7 @@ impl ListView {
                     "{}{}",
                     name,
                     " ".repeat(
-                        self.cols as usize - name.chars().count() - secondary_cols.len() + tmp
+                        self.cols as usize - name.chars().count() - secondary_cols.len() + ordering_spaces_header
                     )
                 )
                 .unwrap();

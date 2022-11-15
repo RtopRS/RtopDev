@@ -27,7 +27,7 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-rtop_dev = "^0.2.0"
+rtop_dev = "^1.1.0"
 
 [lib]
 name = "my_plugin"
