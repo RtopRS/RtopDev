@@ -1,8 +1,8 @@
 [package]
 name = "rtop_dev"
-version = "0.2.2"
+version = "1.1.0-beta.1"
 edition = "2021"
-description = "Development librairy for creating pluign for RtopRS"
+description = "Development librairy for creating plugin for RtopRS"
 repository = "https://github.com/RTopRS/RtopDev"
 readme = "README.md"
 license = "MPL-2.0"
@@ -10,3 +10,4 @@ license = "MPL-2.0"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
+human-sort = "0.2.2"
